@@ -40,6 +40,7 @@
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wizardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.benchmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.singleTileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,7 +82,6 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this._output_pb = new System.Windows.Forms.PictureBox();
-            this.benchmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -165,35 +165,42 @@
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // wizardToolStripMenuItem
             // 
             this.wizardToolStripMenuItem.Name = "wizardToolStripMenuItem";
-            this.wizardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.wizardToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.wizardToolStripMenuItem.Text = "Wizard";
             this.wizardToolStripMenuItem.Click += new System.EventHandler(this.wizardToolStripMenuItem_Click);
             // 
             // gridToolStripMenuItem
             // 
             this.gridToolStripMenuItem.Name = "gridToolStripMenuItem";
-            this.gridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.gridToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.gridToolStripMenuItem.Text = "Grid";
             this.gridToolStripMenuItem.Click += new System.EventHandler(this.gridToolStripMenuItem_Click);
+            // 
+            // benchmarkToolStripMenuItem
+            // 
+            this.benchmarkToolStripMenuItem.Name = "benchmarkToolStripMenuItem";
+            this.benchmarkToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.benchmarkToolStripMenuItem.Text = "Benchmark";
+            this.benchmarkToolStripMenuItem.Click += new System.EventHandler(this.benchmarkToolStripMenuItem_Click);
             // 
             // tilesToolStripMenuItem
             // 
             this.tilesToolStripMenuItem.Name = "tilesToolStripMenuItem";
-            this.tilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tilesToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.tilesToolStripMenuItem.Text = "Tiles";
             this.tilesToolStripMenuItem.Click += new System.EventHandler(this.tilesToolStripMenuItem_Click);
             // 
             // singleTileToolStripMenuItem
             // 
             this.singleTileToolStripMenuItem.Name = "singleTileToolStripMenuItem";
-            this.singleTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.singleTileToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.singleTileToolStripMenuItem.Text = "Single Tile";
             this.singleTileToolStripMenuItem.Click += new System.EventHandler(this.singleTileToolStripMenuItem_Click);
             // 
@@ -437,7 +444,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 499);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 500);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(452, 22);
             this.statusStrip1.TabIndex = 16;
@@ -462,7 +469,7 @@
             this.trackBar1.Maximum = 400;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar1.Size = new System.Drawing.Size(45, 454);
+            this.trackBar1.Size = new System.Drawing.Size(45, 455);
             this.trackBar1.SmallChange = 5;
             this.trackBar1.TabIndex = 17;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
@@ -476,28 +483,21 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this._output_pb.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this._output_pb.InitialImage = null;
-            this._output_pb.Location = new System.Drawing.Point(12, 96);
+            this._output_pb.Location = new System.Drawing.Point(12, 97);
             this._output_pb.Name = "_output_pb";
             this._output_pb.Size = new System.Drawing.Size(400, 400);
             this._output_pb.TabIndex = 11;
             this._output_pb.TabStop = false;
-            this._output_pb.MouseMove += new System.Windows.Forms.MouseEventHandler(this._output_pb_MouseMove);
-            this._output_pb.MouseDown += new System.Windows.Forms.MouseEventHandler(this._output_pb_MouseDown);
-            this._output_pb.MouseUp += new System.Windows.Forms.MouseEventHandler(this._output_pb_MouseUp);
             this._output_pb.SizeChanged += new System.EventHandler(this._output_pb_SizeChanged);
-            // 
-            // benchmarkToolStripMenuItem
-            // 
-            this.benchmarkToolStripMenuItem.Name = "benchmarkToolStripMenuItem";
-            this.benchmarkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.benchmarkToolStripMenuItem.Text = "Benchmark";
-            this.benchmarkToolStripMenuItem.Click += new System.EventHandler(this.benchmarkToolStripMenuItem_Click);
+            this._output_pb.MouseDown += new System.Windows.Forms.MouseEventHandler(this._output_pb_MouseDown);
+            this._output_pb.MouseMove += new System.Windows.Forms.MouseEventHandler(this._output_pb_MouseMove);
+            this._output_pb.MouseUp += new System.Windows.Forms.MouseEventHandler(this._output_pb_MouseUp);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(452, 521);
+            this.ClientSize = new System.Drawing.Size(452, 522);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.cancel_btn);
             this.Controls.Add(this._iterations_txt);

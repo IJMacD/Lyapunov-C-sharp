@@ -50,8 +50,7 @@ namespace Lyapunov
             //byte[] msg = System.Text.Encoding.ASCII.GetBytes("hello there");
             Socket socksender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socksender.Connect(_server, 2000);
-            LyapunovGenerator Lyap = new LyapunovGenerator(socksender);
-            Lyap.SetRemote(LyapunovGenerator.TypeofRemote.Reciever);
+            Generator Lyap = new NetworkGenerator(socksender);
         }
 
         private void net_radio_CheckedChanged(object sender, EventArgs e)

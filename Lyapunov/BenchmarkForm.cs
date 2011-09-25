@@ -18,7 +18,7 @@ namespace Lyapunov
         {
             InitializeComponent();
             mylyap = new LyapunovGenerator();
-            mylyap.PicCompleted += new LyapunovGenerator.PicCompletedHandler(mylyap_PicCompleted);
+            mylyap.Completed += mylyap_PicCompleted;
         }
 
         private void run_btn_Click(object sender, EventArgs e)
@@ -44,7 +44,7 @@ namespace Lyapunov
             }
         }
 
-        void mylyap_PicCompleted(object src)
+        void mylyap_PicCompleted(object src, EventArgs e)
         {
             if (todo > 0)
             {
@@ -57,12 +57,25 @@ namespace Lyapunov
             {
                 run_btn.Text = "Start";
             }
+            calcAverage();
         }
 
         private void clear_btn_Click(object sender, EventArgs e)
         {
             result_lst.Items.Clear();
             numruns_txt.Text = "10";
+        }
+
+        private void calcAverage()
+        {
+            double sum = 0;
+            foreach (ListViewItem Item in result_lst.Items)
+            {
+                double i = double.Parse(Item.Text);
+                sum += i;
+            }
+            double avg = sum / (double)result_lst.Items.Count;
+            status_lbl.Text = avg.ToString()+ " milliseconds";
         }
     }
 }

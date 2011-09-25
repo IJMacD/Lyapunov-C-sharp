@@ -46,9 +46,9 @@ namespace Lyapunov
 
         private void InitLyap(LyapunovGenerator lyap)
         {
-            lyap.ColumnCompleted += new LyapunovGenerator.ColumnCompletedHandler(Lyap_ColumnCompleted);
-            lyap.PicCompleted += new LyapunovGenerator.PicCompletedHandler(Lyap_PicCompleted);
-            lyap.LayerCompleted += new LyapunovGenerator.LayerCompletedHandler(lyap_LayerCompleted);
+            lyap.Progressed += Lyap_ColumnCompleted;
+            lyap.Completed += Lyap_PicCompleted;
+            lyap.LayerCompleted += lyap_LayerCompleted;
         }
 
         //private void InitWorker()
@@ -232,7 +232,7 @@ namespace Lyapunov
             //}
         }
 
-        void Lyap_PicCompleted(object src)
+        void Lyap_PicCompleted(object src, EventArgs e)
         {
                 //completed = true;
                 prog_pri.Value = 0;
@@ -243,7 +243,7 @@ namespace Lyapunov
 
             bool alldone = true;
 
-            foreach (LyapunovGenerator lyap in Lyaps) if (!lyap.Completed) alldone = false;
+            foreach (LyapunovGenerator lyap in Lyaps) if (!lyap.IsComplete) alldone = false;
 
             if (alldone)
             {
@@ -294,11 +294,11 @@ namespace Lyapunov
             }
         }
 
-        void Lyap_ColumnCompleted(object src, LyapunovGenerator.ColumnCompletedEventArgs e)
+        void Lyap_ColumnCompleted(object src, Generator.ProgressedEventArgs e)
         {
             if (_Image == null) return;
             colsDone++;
-            AddColumn(e.X, e.Column);
+            AddColumn(e.X, e.Image);
             //ImageUpdateEventArgs args = new ImageUpdateEventArgs();
             //args.X = e.X;
             //args.Column = e.Column;

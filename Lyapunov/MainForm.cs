@@ -26,8 +26,7 @@ namespace Lyapunov
         int PicWidth;
         int PicHeight;
 
-        Collection<LyapunovGenerator> Lyaps = new Collection<LyapunovGenerator>();
-        //LyapunovGenerator[] Lyaps = new LyapunovGenerator[2];
+        Collection<Generator> Lyaps = new Collection<Generator>();
         Image _Image;
         //{
         //    get
@@ -49,7 +48,7 @@ namespace Lyapunov
         //}
         int refreshrate = 20;
         int waitrefresh = 0;
-        int colsDone;
+        int progress;
         Socket _mainSocket;
         const int port = 2000;
         ArrayList _workerSocketList = ArrayList.Synchronized(new ArrayList());
@@ -57,13 +56,7 @@ namespace Lyapunov
         public MainForm()
         {
             InitializeComponent();
-            InitialiseNetwork();
-            for (int i = 0; i < System.Environment.ProcessorCount; i++)
-            {
-                Lyaps.Add(null);
-                Lyaps[Lyaps.Count - 1] = new LyapunovGenerator();
-                InitLyap(Lyaps[Lyaps.Count - 1]);
-            }
+            //InitialiseNetwork();
         }
 
         void InitialiseNetwork()
@@ -86,9 +79,8 @@ namespace Lyapunov
         {
             try
             {
-                Lyaps.Add(new LyapunovGenerator(_mainSocket.EndAccept(asyn)));
+                Lyaps.Add(new NetworkGenerator(_mainSocket.EndAccept(asyn)));
                 _mainSocket.BeginAccept(new AsyncCallback(OnClientConnect), null);
-                Lyaps[Lyaps.Count - 1].SetRemote(LyapunovGenerator.TypeofRemote.Sender);
                 InitLyap(Lyaps[Lyaps.Count - 1]);
                 UICallerDelegate dlg = new UICallerDelegate(UpdateStatusStripNC);
                 BeginInvoke(dlg, null);
@@ -103,11 +95,11 @@ namespace Lyapunov
                 statusStrip1.Text = "Client Connected";
         }
 
-        private void InitLyap(LyapunovGenerator lyap)
+        private void InitLyap(Generator lyap)
         {
-            lyap.ColumnCompleted += new LyapunovGenerator.ColumnCompletedHandler(Lyap_ColumnCompleted);
-            lyap.PicCompleted += new LyapunovGenerator.PicCompletedHandler(Lyap_PicCompleted);
-            lyap.Died += new LyapunovGenerator.DiedHandler(Lyap_Died);
+            lyap.Progressed += Lyap_AreaCompleted;
+            lyap.Completed += Lyap_PicCompleted;
+            lyap.Died += Lyap_Died;
         }
 
         private bool parseArgs()
@@ -132,6 +124,19 @@ namespace Lyapunov
         void Generate()
         {
 
+            for (int i = 0; i < System.Environment.ProcessorCount; i++)
+            {
+                if (Lyaps.Count < i + 1)
+                {
+                    Generator l = new LyapunovGenerator();
+                    if (l != null)
+                    {
+                        InitLyap(l);
+                        Lyaps.Add(l);
+                    }
+                }
+            }
+
             if (_output_pb.BackgroundImage != null) _output_pb.BackgroundImage.Dispose();
 
             //CreateForegroundBitmap();
@@ -139,9 +144,9 @@ namespace Lyapunov
             PicWidth = _output_pb.Width;
             PicHeight = _output_pb.Height;
 
-            colsDone = 0;
+            progress = 0;
             toolStripStatusLabel1.Text = "Generating...";
-            toolStripProgressBar1.Maximum = PicWidth;
+            //toolStripProgressBar1.Maximum = PicWidth;
             toolStripProgressBar1.Value = 0;
 
             _Image = new Bitmap(PicWidth, PicHeight);
@@ -160,77 +165,47 @@ namespace Lyapunov
                     Lyaps[j] = new LyapunovGenerator();
                     InitLyap(Lyaps[j]);
                 }
-                Lyaps[j].Initialise(xmin, xmax, YMin, YMax, Pattern, Iterations, InitX, width, PicHeight, startX);
+                Configuration conf = new Configuration(xmin, xmax, YMin, YMax, Pattern, Iterations, InitX, width, PicHeight, startX);
+                Lyaps[j].Initialise(conf);
                 Lyaps[j].Generate();
             }
         }
 
-        void Lyap_Died(object src)
+        void Lyap_Died(object src, EventArgs e)
         {
             Lyaps.Remove((LyapunovGenerator)src);
         }
 
-        void Lyap_PicCompleted(object src)
+        void Lyap_PicCompleted(object src, EventArgs e)
         {
             _output_pb.BackgroundImage = _Image;
             UICallerDelegate dlg = new UICallerDelegate(UpdatePicBox);
             BeginInvoke(dlg, null);
-            Collection<LyapunovGenerator> complete = new Collection<LyapunovGenerator>();
-            Collection<LyapunovGenerator> incomplete = new Collection<LyapunovGenerator>();
-            foreach (LyapunovGenerator Lyap in Lyaps)
+            bool complete = true;
+            foreach (Generator Lyap in Lyaps)
             {
-                if (Lyap.Completed)
+                if (!Lyap.IsComplete)
                 {
-                //    complete.Add(Lyap);
-                //    if (incomplete.Count > 0)
-                //    {
-                //        if (incomplete[0].EndCol - incomplete[0].LastCol > 10)
-                //        {
-                //            double oldendx = incomplete[0].EndX;
-                //            int oldendcol = incomplete[0].EndCol;
-                //            int newendcol = (incomplete[0].EndCol + incomplete[0].LastCol) / 2;
-                //            incomplete[0].EndCol = newendcol;
-                //            Lyap.Initialise(Lyap.EndX, oldendx, YMin, YMax, Pattern, Iterations, InitX, Lyap.EndCol - Lyap.StartCol, PicHeight, Lyap.EndCol);
-                //            Lyap.Generate();
-                //            incomplete.RemoveAt(0);
-                //        }
-                //    }
-                }
-                else
-                {
-                    incomplete.Add(Lyap);
-                    //if (complete.Count > 0)
-                    //{
-                    //    if (Lyap.EndCol - Lyap.LastCol > 10)
-                    //    {
-
-                    //        double oldendx = Lyap.EndX;
-                    //        int oldendcol = Lyap.EndCol;
-                    //        int newendcol = (Lyap.EndCol + Lyap.LastCol) / 2;
-                    //        Lyap.EndCol = newendcol;
-                    //        complete[0].Initialise(Lyap.EndX, oldendx, YMin, YMax, Pattern, Iterations, InitX, Lyap.EndCol - Lyap.StartCol, PicHeight, Lyap.EndCol);
-                    //        complete[0].Generate();
-                    //        complete.RemoveAt(0);
-                    //    }
-                    //}
+                    complete = false;
+                    break;
                 }
             }
-            if (incomplete.Count == 0)
+            if (complete)
             {
                 string msgText = "Completed in: " + CalcDuration();
                 toolStripStatusLabel1.Text = msgText;
                 MessageBox.Show(msgText);
-                colsDone = 0;
+                progress = 0;
                 UICallerDelegate delg = new UICallerDelegate(UpdateProgBar);
                 BeginInvoke(delg, null);
             }
         }
 
-        void Lyap_ColumnCompleted(object src, LyapunovGenerator.ColumnCompletedEventArgs e)
+        void Lyap_AreaCompleted(object src, Generator.ProgressedEventArgs e)
         {
             if (_Image == null) return;
-            colsDone++;
-            AddColumn(e.X, e.Column);
+            progress = e.Progress;
+            AddArea(e.X, e.Y, e.Z, e.Image);
             //ImageUpdateEventArgs args = new ImageUpdateEventArgs();
             //args.X = e.X;
             //args.Column = e.Column;
@@ -254,17 +229,18 @@ namespace Lyapunov
             catch { }
         }
 
-        private void AddColumn(int X, Bitmap image)
+        private void AddArea(int X, int Y, int Z, Bitmap image)
         {
             try
             {
                 Graphics g = Graphics.FromImage(_Image);
-                g.DrawImage(image, X, 0);
+                g.DrawImage(image, X, Y);
                 g.Dispose();
             }
             catch
             {
-                AddColumn(X, image);
+                //INFINITE LOOP???
+                AddArea(X, Y, Z, image);
             }
         }
 
@@ -272,9 +248,9 @@ namespace Lyapunov
 
         private void UpdateProgBar()
         {
-            if (colsDone < toolStripProgressBar1.Maximum)
+            if (progress < toolStripProgressBar1.Maximum)
             {
-                toolStripProgressBar1.Value = colsDone;
+                toolStripProgressBar1.Value = progress;
             }
         }
 
@@ -415,8 +391,8 @@ namespace Lyapunov
 
                 double xmin = XMin + ((XMax - XMin) / _output_pb.Width) * X1;
                 double xmax = XMin + ((XMax - XMin) / _output_pb.Width) * X2;
-                double ymin = YMax - ((YMax - YMin) / _output_pb.Height) * Y1;
-                double ymax = YMax - ((YMax - YMin) / _output_pb.Height) * Y2;
+                double ymax = YMax - ((YMax - YMin) / _output_pb.Height) * Y1;
+                double ymin = YMax - ((YMax - YMin) / _output_pb.Height) * Y2;
 
                 _x_min_txt.Text = xmin.ToString();
                 _x_max_txt.Text = xmax.ToString();
@@ -462,7 +438,7 @@ namespace Lyapunov
 
         private void strt_btn_Click(object sender, EventArgs e)
         {
-            foreach (LyapunovGenerator Lyap in Lyaps)
+            foreach (Generator Lyap in Lyaps)
             {
                 if (Lyap != null) Lyap.Stop();
             }
@@ -472,7 +448,7 @@ namespace Lyapunov
 
         private void cancel_btn_Click(object sender, EventArgs e)
         {
-            foreach (LyapunovGenerator Lyap in Lyaps)
+            foreach (Generator Lyap in Lyaps)
             {
                 if (Lyap != null) Lyap.Stop();
             }
@@ -531,7 +507,7 @@ namespace Lyapunov
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (LyapunovGenerator Lyap in Lyaps)
+            foreach (Generator Lyap in Lyaps)
             {
                 if (Lyap != null)
                 {

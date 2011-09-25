@@ -40,9 +40,9 @@ namespace Lyapunov
 
         private void InitLyap(LyapunovGenerator lyap)
         {
-            lyap.ColumnCompleted += new LyapunovGenerator.ColumnCompletedHandler(Lyap_ColumnCompleted);
-            lyap.PicCompleted += new LyapunovGenerator.PicCompletedHandler(Lyap_PicCompleted);
-            lyap.LayerCompleted += new LyapunovGenerator.LayerCompletedHandler(lyap_LayerCompleted);
+            lyap.Progressed += Lyap_ColumnCompleted;
+            lyap.Completed += Lyap_PicCompleted;
+            lyap.LayerCompleted += lyap_LayerCompleted;
         }
 
         private void InitWorker()
@@ -181,7 +181,7 @@ namespace Lyapunov
             catch
             {
                 Confs.Clear();
-                MessageBox.Show("Problem with: " + sender.Conf._z + "x (" + sender.Conf._x + ", " + sender.Conf._y + ") please sort out!!!");
+                //MessageBox.Show("Problem with: " + sender.Conf._z + "x (" + sender.Conf._x + ", " + sender.Conf._y + ") please sort out!!!");
             
                 //MessageBox.Show("File Error");
                 if (fileError < 5)
@@ -200,7 +200,7 @@ namespace Lyapunov
             }
         }
 
-        void Lyap_PicCompleted(object src)
+        void Lyap_PicCompleted(object src, EventArgs e)
         {
             if (prog_tiles.Value < prog_tiles.Maximum)
             {
@@ -256,7 +256,7 @@ namespace Lyapunov
             }
         }
 
-        void Lyap_ColumnCompleted(object src, LyapunovGenerator.ColumnCompletedEventArgs e)
+        void Lyap_ColumnCompleted(object src, Generator.ProgressedEventArgs e)
         {
             if (src == Lyaps[0] && e.X < prog_pri.Maximum)
             {

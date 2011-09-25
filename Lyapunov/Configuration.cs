@@ -76,7 +76,7 @@ namespace Lyapunov
         }
         public int StartCol
         {
-            get { return 0; }
+            get { return _startX; }
         }
 
         public int Divisions

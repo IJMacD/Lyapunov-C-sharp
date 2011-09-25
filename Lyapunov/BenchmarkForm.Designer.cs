@@ -36,6 +36,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.clear_btn = new System.Windows.Forms.Button();
             this.result_lst = new System.Windows.Forms.ListView();
+            this.status_lbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // type_btn
@@ -71,7 +72,7 @@
             // run_btn
             // 
             this.run_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.run_btn.Location = new System.Drawing.Point(209, 178);
+            this.run_btn.Location = new System.Drawing.Point(209, 216);
             this.run_btn.Name = "run_btn";
             this.run_btn.Size = new System.Drawing.Size(75, 23);
             this.run_btn.TabIndex = 4;
@@ -100,7 +101,7 @@
             // clear_btn
             // 
             this.clear_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.clear_btn.Location = new System.Drawing.Point(12, 178);
+            this.clear_btn.Location = new System.Drawing.Point(12, 216);
             this.clear_btn.Name = "clear_btn";
             this.clear_btn.Size = new System.Drawing.Size(75, 23);
             this.clear_btn.TabIndex = 8;
@@ -115,17 +116,26 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.result_lst.Location = new System.Drawing.Point(12, 61);
             this.result_lst.Name = "result_lst";
-            this.result_lst.Size = new System.Drawing.Size(272, 111);
+            this.result_lst.Size = new System.Drawing.Size(272, 133);
             this.result_lst.TabIndex = 9;
             this.result_lst.TileSize = new System.Drawing.Size(45, 16);
             this.result_lst.UseCompatibleStateImageBehavior = false;
             this.result_lst.View = System.Windows.Forms.View.Tile;
             // 
+            // status_lbl
+            // 
+            this.status_lbl.AutoSize = true;
+            this.status_lbl.Location = new System.Drawing.Point(13, 197);
+            this.status_lbl.Name = "status_lbl";
+            this.status_lbl.Size = new System.Drawing.Size(0, 13);
+            this.status_lbl.TabIndex = 10;
+            // 
             // BenchmarkForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(296, 213);
+            this.ClientSize = new System.Drawing.Size(296, 251);
+            this.Controls.Add(this.status_lbl);
             this.Controls.Add(this.result_lst);
             this.Controls.Add(this.clear_btn);
             this.Controls.Add(this.label2);
@@ -151,5 +161,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button clear_btn;
         private System.Windows.Forms.ListView result_lst;
+        private System.Windows.Forms.Label status_lbl;
     }
 }

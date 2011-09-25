@@ -34,9 +34,9 @@ namespace Lyapunov
         
         private void InitLyap(LyapunovGenerator lyap)
         {
-            lyap.ColumnCompleted += new LyapunovGenerator.ColumnCompletedHandler(Lyap_ColumnCompleted);
-            lyap.PicCompleted += new LyapunovGenerator.PicCompletedHandler(Lyap_PicCompleted);
-            lyap.LayerCompleted += new LyapunovGenerator.LayerCompletedHandler(lyap_LayerCompleted);
+            lyap.Progressed += Lyap_ColumnCompleted;
+            lyap.Completed += Lyap_PicCompleted;
+            lyap.LayerCompleted += lyap_LayerCompleted;
             //lyap.Died += new LyapunovGenerator.DiedHandler(Lyap_Died);
         }
 
@@ -162,25 +162,24 @@ namespace Lyapunov
             }
         }
 
-        private string GetFilename(LyapunovGenerator Lyap)
+        private string GetFilename(Generator Lyap)
         {
-            string p1 = Lyap.StartX.ToString() + "-" +
-                Lyap.EndX.ToString() + "-" +
-                Lyap.Conf.PicWidth.ToString() + "-" +
-                Lyap.Conf.YMin.ToString() + "-" +
-                Lyap.Conf.YMax.ToString() + "-" +
-                Lyap.Conf.PicHeight.ToString() + "-";
-            string p2 = Lyap.Conf.PicDepth > 1 ? Lyap.Conf.ZMin.ToString() + "-" +
-                Lyap.Conf.ZMax.ToString() + "-" +
-                Lyap.LastLayer.ToString() + "-" +
-                Lyap.Conf.PicDepth.ToString() + "-" : "";
-            string p3 = new string(Lyap.Conf.Pattern) + "-" +
-                Lyap.Conf.Iterations.ToString() + "-" +
-                Lyap.Conf.InitX;
+            string p1 = Lyap.MinX.ToString() + "-" +
+                Lyap.MaxX.ToString() + "-" +
+                Lyap.PicWidth.ToString() + "-" +
+                Lyap.MinY.ToString() + "-" +
+                Lyap.MaxY.ToString() + "-" +
+                Lyap.PicHeight.ToString() + "-";
+            string p2 = Lyap.PicDepth > 1 ? Lyap.MinZ.ToString() + "-" +
+                Lyap.MaxZ.ToString() + "-" +
+                Lyap.PicDepth.ToString() + "-" : "";
+            string p3 = new string(Lyap.Pattern) + "-" +
+                Lyap.Iterations.ToString() + "-" +
+                Lyap.InitX;
             return p1 + p2 + p3 + ".jpg";
         }
 
-        void Lyap_PicCompleted(object src)
+        void Lyap_PicCompleted(object src, EventArgs e)
         {
             if (progressBar3.Value + 1 < progressBar3.Maximum)
             {
@@ -208,7 +207,7 @@ namespace Lyapunov
             }
         }
 
-        void Lyap_ColumnCompleted(object src, LyapunovGenerator.ColumnCompletedEventArgs e)
+        void Lyap_ColumnCompleted(object src, Generator.ProgressedEventArgs e)
         {
             if (e.X < progressBar1.Maximum)
             {
